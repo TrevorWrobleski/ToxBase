@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Add Toxicology Study</title>
+</head>
+<body>
+    <h1>Add a New Toxicology Study</h1>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>{{ form.study_name.label }}<br>{{ form.study_name(size=50) }}</p>
+        <p>{{ form.toxin.label }}<br>{{ form.toxin(size=50) }}</p>
+        <p>{{ form.toxin_category.label }}<br>{{ form.toxin_category() }}</p>
+        <p>{{ form.toxin_category_other.label }}<br>{{ form.toxin_category_other(size=50) }}</p>
+        <p>{{ form.kingdom.label }}<br>{{ form.kingdom(size=50) }}</p>
+        <p>{{ form.phylum.label }}<br>{{ form.phylum(size=50) }}</p>
+        <p>{{ form.tclass.label }}<br>{{ form.tclass(size=50) }}</p>
+        <p>{{ form.family.label }}<br>{{ form.family(size=50) }}</p>
+        <p>{{ form.genus.label }}<br>{{ form.genus(size=50) }}</p>
+        <p>{{ form.animal.label }}<br>{{ form.animal(size=50) }}</p>
+        <p>{{ form.route.label }}<br>{{ form.route() }}</p>
+        <p>{{ form.sex.label }}<br>{{ form.sex() }}</p>
+        <p>{{ form.body_part.label }}<br>{{ form.body_part(size=50) }}</p>
+        <p>{{ form.dose.label }}<br>{{ form.dose() }}</p>
+        <p>{{ form.dose_units.label }}<br>{{ form.dose_units() }}</p>
+        <p>{{ form.dose_units_other.label }}<br>{{ form.dose_units_other(size=50) }}</p>
+        <p>{{ form.total_subjects.label }}<br>{{ form.total_subjects() }}</p>
+        <p>{{ form.study_duration.label }}<br>{{ form.study_duration(size=50) }}</p>
+        <p>{{ form.notes.label }}<br>{{ form.notes(rows=3, cols=50) }}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+    <p><a href="{{ url_for('index') }}">Back to Home</a></p>
+</body>
+</html>

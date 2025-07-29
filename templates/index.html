@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Toxicology Studies Database</title>
+</head>
+<body>
+    <h1>Toxicology Studies</h1>
+    <p><a href="{{ url_for('add_study') }}">Add a New Study</a></p>
+    <table border="1" cellspacing="0" cellpadding="5">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Study Name</th>
+                <th>Toxin</th>
+                <th>Animal Model</th>
+                <th>Route</th>
+                <th>Dose</th>
+                <th>Duration</th>
+                <th>Outcomes</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for study in studies %}
+            <tr>
+                <td>{{ study.id }}</td>
+                <td><a href="{{ url_for('study_detail', study_id=study.id) }}">{{ study.study_name }}</a></td>
+                <td>{{ study.toxin }} ({{ study.toxin_category }}{% if study.toxin_category == 'other' and study.toxin_category_other %} - {{ study.toxin_category_other }}{% endif %})</td>
+                <td>{{ study.animal }}</td>
+                <td>{{ study.route }}</td>
+                <td>
+                    {{ study.dose }}
+                    {% if study.dose_units != 'other' %}
+                        {{ study.dose_units }}
+                    {% else %}
+                        {{ study.dose_units_other }}
+                    {% endif %}
+                </td>
+                <td>{{ study.study_duration }}</td>
+                <td>{{ study.outcomes|length }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

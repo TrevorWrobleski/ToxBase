@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+
+{% block title %}ToxBase - Study Details{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Study: {{ study.name }}</h1>
+
+    <div class="btn-toolbar mb-4">
+        <a href="{{ url_for('view_study_long_format', study_id=study.id) }}" class="btn btn-info me-2">
+            <i class="fas fa-table me-2"></i>View Long Format
+        </a>
+        <a href="{{ url_for('export_study', study_id=study.id) }}" class="btn btn-success">
+            <i class="fas fa-download me-2"></i>Download as CSV
+        </a>
+    </div>
+
+    <div class="card mb-4">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Study Information</h5>
+        </div>
+        <div class="card-body">
+            <div class="row">
+                <div class="col-md-6">
+                    <p><strong>Toxin:</strong> {{ study.toxin.name }}</p>
+                    <p><strong>Date Conducted:</strong> {{ study.date_conducted or 'Not specified' }}</p>
+                    <p><strong>Author/Researcher:</strong> {{ study.author or 'Not specified' }}</p>
+                    <p><strong>Contributor:</strong> {{ study.contributor_name or 'Not specified' }}</p>
+                    <p><strong>Publication Reference:</strong> {{ study.publication_reference or 'None' }}</p>
+                </div>
+                <div class="col-md-6">
+                    <p><strong>Description:</strong> {{ study.description or 'No description provided' }}</p>
+                    <p><strong>Added on:</strong> {{ study.created_at.strftime('%Y-%m-%d') }}</p>
+                    {% if study_metadata %}
+                        <p><strong>Additional Information:</strong></p>
+                        <ul>
+                            {% for item in study_metadata %}
+                                <li><strong>{{ item.field_name }}:</strong> {{ item.field_value }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% for animal_model in study.animal_models %}
+        <div class="card mb-4">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    {{ animal_model.species }} ({{ animal_model.sex }})
+                    {% if animal_model.strain %}
+                        - {{ animal_model.strain }}
+                    {% endif %}
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="mb-3">
+                    <p><strong>Age:</strong> {{ animal_model.age or 'Not specified' }}</p>
+                    <p><strong>Weight:</strong> {{ animal_model.weight or 'Not specified' }}</p>
+                    {% if animal_model.description %}
+                        <p><strong>Additional Details:</strong> {{ animal_model.description }}</p>
+                    {% endif %}
+
+                    {% if metadata['animal_' ~ animal_model.id] %}
+                        <p><strong>Additional Information:</strong></p>
+                        <ul>
+                            {% for item in metadata['animal_' ~ animal_model.id] %}
+                                <li><strong>{{ item.field_name }}:</strong> {{ item.field_value }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+
+                <h6 class="mt-4 mb-3">Dose Groups and Outcomes</h6>
+                <div class="table-responsive">
+                    <table class="table table-striped table-bordered">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Dose</th>
+                                <th>Group Size</th>
+                                <th>Exposure Duration</th>
+                                <th>Outcomes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for dose_group in animal_model.dose_groups %}
+                            <tr>
+                                <td>
+                                    {{ dose_group.dose_value }}
+                                    {% if dose_group.dose_unit != 'other' %}
+                                        {{ dose_group.dose_unit }}
+                                    {% else %}
+                                        {{ dose_group.custom_dose_unit }}
+                                    {% endif %}
+
+                                    {% if metadata['dose_' ~ dose_group.id] %}
+                                        <br><small><strong>Additional Info:</strong>
+                                        {% for item in metadata['dose_' ~ dose_group.id] %}
+                                            {{ item.field_name }}: {{ item.field_value }}
+                                            {% if not loop.last %}, {% endif %}
+                                        {% endfor %}
+                                        </small>
+                                    {% endif %}
+                                </td>
+                                <td>{{ dose_group.group_size }}</td>
+                                <td>{{ dose_group.exposure_duration or 'Not specified' }}</td>
+                                <td>
+                                    {% if dose_group.outcomes %}
+                                        <ul class="list-group">
+                                            {% for outcome in dose_group.outcomes %}
+                                                <li class="list-group-item">
+                                                    <strong>
+                                                        {% if outcome.outcome_type != 'other' %}
+                                                        {{ OUTCOME_LABELS[outcome.outcome_type] }} {% else %}
+                                                            {{ outcome.custom_outcome_type }}
+                                                        {% endif %}
+                                                    </strong>:
+                                                    {{ outcome.value }}
+                                                    {% if outcome.observation_time %}
+                                                        ({{ outcome.observation_time }})
+                                                    {% endif %}
+
+                                                    {% if outcome.notes %}
+                                                        <br><small>{{ outcome.notes }}</small>
+                                                    {% endif %}
+
+                                                    {% if metadata['outcome_' ~ outcome.id] %}
+                                                        <br><small><strong>Additional Info:</strong>
+                                                        {% for item in metadata['outcome_' ~ outcome.id] %}
+                                                            {{ item.field_name }}: {{ item.field_value }}
+                                                            {% if not loop.last %}, {% endif %}
+                                                        {% endfor %}
+                                                        </small>
+                                                    {% endif %}
+                                                </li>
+                                            {% endfor %}
+                                        </ul>
+                                    {% else %}
+                                        <p class="text-muted">No outcomes recorded</p>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    {% endfor %}
+
+    <div class="d-grid gap-2 d-md-flex justify-content-md-center mb-4">
+        <a href="{{ url_for('list_studies') }}" class="btn btn-secondary">
+            <i class="fas fa-list me-2"></i>Back to All Studies
+        </a>
+        <a href="{{ url_for('home') }}" class="btn btn-primary">
+            <i class="fas fa-home me-2"></i>Return to Home
+        </a>
+    </div>
+{% endblock %}

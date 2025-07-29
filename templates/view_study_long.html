@@ -1,0 +1,56 @@
+{% extends 'base.html' %}
+
+{% block title %}ToxBase - Study Data (Long Format){% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Study Data: {{ study.name }}</h1>
+
+    <div class="d-flex justify-content-between mb-4">
+        <a href="{{ url_for('view_study', study_id=study.id) }}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Study
+        </a>
+        <a href="{{ url_for('export_study', study_id=study.id) }}" class="btn btn-success">
+            <i class="fas fa-download me-2"></i>Download as CSV
+        </a>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Data in Long Format</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th>Species</th>
+                            <th>Strain</th>
+                            <th>Sex</th>
+                            <th>Dose</th>
+                            <th>Unit</th>
+                            <th>Group Size</th>
+                            <th>Outcome Type</th>
+                            <th>Value</th>
+                            <th>Observation Time</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for row in rows %}
+                        <tr>
+                            <td>{{ row.animal_species }}</td>
+                            <td>{{ row.animal_strain }}</td>
+                            <td>{{ row.animal_sex }}</td>
+                            <td>{{ row.dose_value }}</td>
+                            <td>{{ row.dose_unit }}</td>
+                            <td>{{ row.group_size }}</td>
+                            <td>{{ row.outcome_type }}</td>
+                            <td>{{ row.outcome_value }}</td>
+                            <td>{{ row.observation_time }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

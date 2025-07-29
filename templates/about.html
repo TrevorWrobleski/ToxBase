@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}ToxBase - About{% endblock %}
+
+{% block content %}
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="mb-4 text-center">About ToxBase</h1>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title h4 mb-3 text-success">
+                        <i class="fas fa-flask me-2"></i>What is ToxBase?
+                    </h2>
+                    <p>
+                        ToxBase is an open-source, community-driven toxicology database designed to collect, organize,
+                        and make accessible scientific data from toxicological studies. Our mission is to create a 
+                        comprehensive repository of toxicology information that can be used by researchers, 
+                        toxicologists, regulatory scientists, and the public.
+                    </p>
+                    <p>
+                        By standardizing how toxicology data is collected and shared, ToxBase aims to facilitate
+                        more efficient analysis, comparison, and meta-analysis of toxicological findings across 
+                        different studies and research groups.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title h4 mb-3 text-success">
+                        <i class="fas fa-database me-2"></i>Data Structure
+                    </h2>
+                    <p>
+                        ToxBase organizes toxicology data in a hierarchical structure:
+                    </p>
+                    <ul class="list-group list-group-flush mb-3">
+                        <li class="list-group-item">
+                            <strong>Study</strong> - The top level that contains information about the research investigation,
+                            including the toxin studied, author, publication references, and description.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Animal Model</strong> - Details about the test subjects used in the study, including
+                            species, strain, sex, age, and weight.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Dose Group</strong> - Information about different exposure levels, including the 
+                            dose value, unit, group size, and exposure duration.
+                        </li>
+                        <li class="list-group-item">
+                            <strong>Outcome</strong> - The observed effects or results from the study, such as 
+                            cancer incidence, organ weight changes, mortality, or other endpoints.
+                        </li>
+                    </ul>
+                    <p>
+                        This structure allows for precise data entry and efficient querying, enabling users to find 
+                        specific information or analyze trends across multiple studies.
+                    </p>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title h4 mb-3 text-success">
+                        <i class="fas fa-users me-2"></i>Community Contribution
+                    </h2>
+                    <p>
+                        ToxBase thrives on community participation. Anyone can contribute to the database by:
+                    </p>
+                    <ul>
+                        <li>Adding new toxicology studies</li>
+                        <li>Entering data from published literature</li>
+                        <li>Improving existing entries with additional information</li>
+                        <li>Suggesting enhancements to the database structure</li>
+                    </ul>
+                    <p>
+                        To maintain data quality, we encourage contributors to:
+                    </p>
+                    <ul>
+                        <li>Provide complete and accurate information</li>
+                        <li>Include references to original sources</li>
+                        <li>Follow the standardized data entry format</li>
+                        <li>Document any assumptions or interpretations made when entering data</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-body">
+                    <h2 class="card-title h4 mb-3 text-success">
+                        <i class="fas fa-code me-2"></i>Open Source Project
+                    </h2>
+                    <p>
+                        ToxBase is fully open-source, built with Python using the Flask web framework and SQLAlchemy
+                        for database management. Our code is available for review, contribution, and forking.
+                    </p>
+                    <p>
+                        Developers interested in contributing to the codebase can help by:
+                    </p>
+                    <ul>
+                        <li>Adding new features</li>
+                        <li>Improving the user interface</li>
+                        <li>Enhancing database performance</li>
+                        <li>Fixing bugs and addressing issues</li>
+                        <li>Improving documentation</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-body">
+                    <h2 class="card-title h4 mb-3 text-success">
+                        <i class="fas fa-search me-2"></i>Using the Data
+                    </h2>
+                    <p>
+                        All data in ToxBase is freely available for research, educational, and public health purposes.
+                        When using ToxBase data in publications or other work, please acknowledge the source and
+                        consider contributing back any additional data you generate.
+                    </p>
+                    <p>
+                        The database can be used for various purposes, including:
+                    </p>
+                    <ul>
+                        <li>Conducting meta-analyses across multiple toxicology studies</li>
+                        <li>Identifying dose-response relationships for specific toxins</li>
+                        <li>Comparing outcomes across different animal models</li>
+                        <li>Supporting regulatory risk assessments</li>
+                        <li>Educational purposes in toxicology training</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5">
+                <a href="{{ url_for('new_study') }}" class="btn btn-success btn-lg">
+                    <i class="fas fa-plus-circle me-2"></i>Contribute to ToxBase
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}

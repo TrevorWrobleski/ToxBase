@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Study Details</title>
+</head>
+<body>
+    <h1>Study: {{ study.study_name }}</h1>
+    <p><strong>Toxin:</strong> {{ study.toxin }} ({{ study.toxin_category }}{% if study.toxin_category == 'other' and study.toxin_category_other %} - {{ study.toxin_category_other }}{% endif %})</p>
+    <p><strong>Animal Model:</strong> {{ study.animal }}</p>
+    <p><strong>Route:</strong> {{ study.route }}, <strong>Sex:</strong> {{ study.sex }}</p>
+    <p>
+        <strong>Dose:</strong> {{ study.dose }}
+        {% if study.dose_units != 'other' %}
+            {{ study.dose_units }}
+        {% else %}
+            {{ study.dose_units_other }}
+        {% endif %}
+    </p>
+    <p><strong>Total Subjects:</strong> {{ study.total_subjects }}</p>
+    <p><strong>Study Duration:</strong> {{ study.study_duration }}</p>
+    <p><strong>Notes:</strong> {{ study.notes }}</p>
+
+    <h2>Outcomes</h2>
+    {% if study.outcomes %}
+        <table border="1" cellspacing="0" cellpadding="5">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Outcome Category</th>
+                    <th>Endpoint</th>
+                    <th>Measurement</th>
+                    <th>Measurement Type</th>
+                    <th>Notes</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for o in study.outcomes %}
+                <tr>
+                    <td>{{ o.id }}</td>
+                    <td>{{ o.outcome_category }}</td>
+                    <td>{{ o.endpoint }}</td>
+                    <td>{{ o.measurement }}</td>
+                    <td>{{ o.measurement_type }}</td>
+                    <td>{{ o.notes }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p>No outcomes recorded yet.</p>
+    {% endif %}
+
+    <h2>Add a New Outcome</h2>
+    <form method="POST">
+        {{ form.hidden_tag() }}
+        <p>{{ form.outcome_category.label }}<br>{{ form.outcome_category() }}</p>
+        <p>{{ form.endpoint.label }}<br>{{ form.endpoint(size=50) }}</p>
+        <p>{{ form.measurement.label }}<br>{{ form.measurement() }}</p>
+        <p>{{ form.measurement_type.label }}<br>{{ form.measurement_type() }}</p>
+        <p>{{ form.notes.label }}<br>{{ form.notes(rows=3, cols=50) }}</p>
+        <p>{{ form.submit() }}</p>
+    </form>
+
+    <p><a href="{{ url_for('index') }}">Back to Home</a></p>
+</body>
+</html>

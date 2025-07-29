@@ -1,0 +1,16 @@
+# --- Web framework  -------------------------------------------------
+Flask==2.2.5            # last Flask that still supports Python 3.7
+
+# --- ORM  -----------------------------------------------------------
+Flask-SQLAlchemy==2.5.1 # compatible with SQLAlchemy 1.4
+SQLAlchemy==1.4.49      # explicit pin to avoid unexpected upgrade
+
+# --- Migrations (optional but highly recommended) -------------------
+Flask-Migrate==4.0.5    # alembic wrapper for Flask
+
+# --- Deployment / database driver ----------------------------------
+gunicorn==20.1.0
+psycopg2-binary==2.9.7
+
+# --- Env-var helper -------------------------------------------------
+python-dotenv==1.0.0

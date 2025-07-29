@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block title %}ToxBase - Open Source Toxicology Database{% endblock %}
+
+{% block content %}
+    <div class="px-4 py-5 my-5 text-center">
+        <h1 class="display-5 fw-bold text-success">ToxBase</h1>
+        <div class="col-lg-6 mx-auto">
+            <p class="lead mb-4">
+                An open-source toxicology database enabling researchers and community members 
+                to collaboratively document and access toxicology studies.
+            </p>
+            <div class="d-grid gap-2 d-sm-flex justify-content-sm-center">
+                <a href="{{ url_for('new_study') }}" class="btn btn-primary btn-lg px-4 gap-3">
+                    <i class="fas fa-plus-circle me-2"></i>Add New Study
+                </a>
+                <a href="{{ url_for('list_studies') }}" class="btn btn-outline-secondary btn-lg px-4">
+                    <i class="fas fa-search me-2"></i>Browse Studies
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-flask fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Document Toxin Studies</h5>
+                    <p class="card-text">Record detailed information about toxicology studies including experimental conditions and results.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-paw fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Track Animal Models</h5>
+                    <p class="card-text">Document different animal models used in toxicology research with detailed characteristics.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="card h-100">
+                <div class="card-body text-center">
+                    <i class="fas fa-chart-line fa-3x text-success mb-3"></i>
+                    <h5 class="card-title">Record Dose Responses</h5>
+                    <p class="card-text">Track dose-specific outcomes including cancer incidence, organ effects, and mortality.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% if studies %}
+        <h2 class="mb-4">Recent Studies</h2>
+        <div class="row">
+            {% for study in studies %}
+                <div class="col-md-6 mb-4">
+                    <div class="card">
+                        <div class="card-header bg-light">
+                            <h5 class="card-title mb-0">{{ study.name }}</h5>
+                        </div>
+                        <div class="card-body">
+                            <h6 class="card-subtitle mb-2 text-muted">Toxin: {{ study.toxin.name }}</h6>
+                            <p class="card-text">
+                                {{ study.description|truncate(150) if study.description else "No description provided." }}
+                            </p>
+                            <a href="{{ url_for('view_study', study_id=study.id) }}" class="btn btn-sm btn-outline-primary">
+                                View Details
+                            </a>
+                        </div>
+                        <div class="card-footer text-muted">
+                            Added on {{ study.created_at.strftime('%Y-%m-%d') }}
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% endif %}
+{% endblock %}

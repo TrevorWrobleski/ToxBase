@@ -1,0 +1,157 @@
+{% extends 'base.html' %}
+
+{% block title %}ToxBase - New Outcome{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Add Outcome to Dose Group</h1>
+
+    <div class="progress mb-4">
+        <div class="progress-bar bg-success" role="progressbar" style="width: 100%;"
+             aria-valuenow="100" aria-valuemin="0" aria-valuemax="100">Step 4 of 4</div>
+    </div>
+
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Adding outcome for dose: <strong>{{ dose_group.dose_value }}
+        {% if dose_group.dose_unit != 'other' %}{{ dose_group.dose_unit }}{% else %}{{ dose_group.custom_dose_unit }}{% endif %}</strong>
+        in animal model <strong>{{ dose_group.animal_model.species }} ({{ dose_group.animal_model.sex }})</strong>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Outcome Information</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="outcome_type" class="form-label">Outcome Type *</label>
+                    <select class="form-select" id="outcome_type" name="outcome_type" required
+                            onchange="toggleOutcomeFields()">
+                        {% for value, label in outcome_type_choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div id="custom_outcome_type_field" class="mb-3" style="display: none;">
+                    <label for="custom_outcome_type" class="form-label">Custom Outcome Type *</label>
+                    <input type="text" class="form-control" id="custom_outcome_type" name="custom_outcome_type">
+                </div>
+
+                <div id="cancer_value_field" class="mb-3" style="display: none;">
+                    <label for="cancer_value" class="form-label">Tumor Count/Incidence</label>
+                    <input type="number" min="0" class="form-control" id="cancer_value" name="cancer_value"
+                           placeholder="Number of tumors or affected animals">
+                    <small class="text-muted">Must be a non-negative integer</small>
+                </div>
+
+                <div id="standard_value_field" class="mb-3">
+                    <label for="value" class="form-label">Value/Result *</label>
+                    <textarea class="form-control" id="value" name="value" rows="2"></textarea>
+                    <small class="text-muted">Describe the outcome observed (e.g., "15% increase in liver weight")</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="observation_time" class="form-label">Observation Time</label>
+                    <input type="text" class="form-control" id="observation_time" name="observation_time"
+                           placeholder="e.g., After 90 days, Week 12">
+                </div>
+
+                <div class="mb-3">
+                    <label for="notes" class="form-label">Notes</label>
+                    <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="card-title mb-0">Additional Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="additional-fields-container">
+                            <div class="mb-3 row additional-field">
+                                <div class="col">
+                                    <input type="text" class="form-control" name="additional_field_name[]" placeholder="Field Name">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" name="additional_field_value[]" placeholder="Field Value">
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-danger remove-field">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="add-field-btn" class="btn btn-secondary">Add Another Field</button>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <button type="submit" name="add_another" value="1" class="btn btn-info me-md-2">
+                        <i class="fas fa-plus-circle me-2"></i>Add Another Outcome to This Dose
+                    </button>
+                    <button type="submit" name="add_another_dose" value="1" class="btn btn-warning me-md-2">
+                        <i class="fas fa-exchange-alt me-2"></i>Add Outcome to Different Dose
+                    </button>
+                    <button type="submit" class="btn btn-success">
+                        <i class="fas fa-check-circle me-2"></i>Complete Study
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleOutcomeFields() {
+            const outcomeType = document.getElementById('outcome_type').value;
+            const customOutcomeField = document.getElementById('custom_outcome_type_field');
+            const cancerValueField = document.getElementById('cancer_value_field');
+            const standardValueField = document.getElementById('standard_value_field');
+
+            // Reset displays
+            customOutcomeField.style.display = 'none';
+            cancerValueField.style.display = 'none';
+            standardValueField.style.display = 'block';
+
+            // Configure based on outcome type
+            if (outcomeType === 'other') {
+                customOutcomeField.style.display = 'block';
+                customOutcomeField.querySelector('input').required = true;
+            } else {
+                customOutcomeField.querySelector('input').required = false;
+            }
+
+            if (outcomeType === 'cancer') {
+                cancerValueField.style.display = 'block';
+                standardValueField.style.display = 'none';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleOutcomeFields();
+
+            // Add field button
+            document.getElementById('add-field-btn').addEventListener('click', function() {
+                const container = document.getElementById('additional-fields-container');
+                const fieldTemplate = document.querySelector('.additional-field').cloneNode(true);
+
+                // Clear input values
+                fieldTemplate.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                });
+
+                // Add remove button functionality
+                fieldTemplate.querySelector('.remove-field').addEventListener('click', function() {
+                    this.closest('.additional-field').remove();
+                });
+
+                container.appendChild(fieldTemplate);
+            });
+
+            // Initial remove buttons
+            document.querySelectorAll('.remove-field').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.closest('.additional-field').remove();
+                });
+            });
+        });
+    </script>
+{% endblock %}

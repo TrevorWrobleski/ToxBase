@@ -1,0 +1,181 @@
+{% extends 'base.html' %}
+
+{% block title %}ToxBase - New Dose Group{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Add Dose Group to Animal Model</h1>
+    
+    <div class="progress mb-4">
+        <div class="progress-bar bg-success" role="progressbar" style="width: 75%;" 
+             aria-valuenow="75" aria-valuemin="0" aria-valuemax="100">Step 3 of 4</div>
+    </div>
+    
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Adding dose group for: <strong>{{ animal_model.species }} ({{ animal_model.sex }})</strong> 
+        in study <strong>{{ animal_model.study.name }}</strong>
+    </div>
+    
+    {% if existing_dose_groups %}
+    <div class="card mb-4">
+        <div class="card-header bg-info text-white">
+            <h5 class="card-title mb-0">Existing Dose Groups</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Dose Value</th>
+                            <th>Unit</th>
+                            <th>Group Size</th>
+                            <th>Exposure Duration</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for group in existing_dose_groups %}
+                        <tr>
+                            <td>{{ group.dose_value }}</td>
+                            <td>{{ group.custom_dose_unit if group.dose_unit == 'other' else group.dose_unit }}</td>
+                            <td>{{ group.group_size }}</td>
+                            <td>{{ group.exposure_duration }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Dose Group Information</h5>
+        </div>
+        <div class="card-body">
+            <form method="POST">
+                <div class="mb-3">
+                    <label for="dose_value" class="form-label">Dose Value *</label>
+                    <input type="number" step="any" min="0" class="form-control" id="dose_value" name="dose_value" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="dose_unit" class="form-label">Dose Unit *</label>
+                    <select class="form-select" id="dose_unit" name="dose_unit" required
+                            onchange="toggleCustomField('dose_unit', 'custom_dose_unit_field')">
+                        {% for value, label in dose_unit_choices %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div id="custom_dose_unit_field" class="mb-3" style="display: none;">
+                    <label for="custom_dose_unit" class="form-label">Custom Dose Unit *</label>
+                    <input type="text" class="form-control" id="custom_dose_unit" name="custom_dose_unit">
+                </div>
+
+                <div class="mb-3">
+                    <label for="group_size" class="form-label">Group Size (Number of Animals) *</label>
+                    <input type="number" min="1" class="form-control" id="group_size" name="group_size" required>
+                </div>
+
+                <div class="mb-3">
+                    <label for="route_of_exposure" class="form-label">Route of Exposure *</label>
+                    <select class="form-select"
+                            id="route_of_exposure"
+                            name="route_of_exposure"
+                            required
+                            onchange="toggleCustomField('route_of_exposure','custom_route_field')">
+                        {% for value, label in ROUTE_LABELS.items() %}
+                            <option value="{{ value }}">{{ label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+
+                <div id="custom_route_field" class="mb-3" style="display:none;">
+                    <label for="custom_route" class="form-label">Custom Route *</label>
+                    <input type="text" class="form-control" id="custom_route" name="custom_route">
+                </div>
+
+                <div class="mb-3">
+                    <label for="exposure_duration" class="form-label">Exposure Duration</label>
+                    <input type="text" class="form-control" id="exposure_duration" name="exposure_duration"
+                           placeholder="e.g., 90 days, 2 years, single dose">
+                </div>
+
+                <div class="card mt-4">
+                    <div class="card-header bg-secondary text-white">
+                        <h5 class="card-title mb-0">Additional Information</h5>
+                    </div>
+                    <div class="card-body">
+                        <div id="additional-fields-container">
+                            <div class="mb-3 row additional-field">
+                                <div class="col">
+                                    <input type="text" class="form-control" name="additional_field_name[]" placeholder="Field Name">
+                                </div>
+                                <div class="col">
+                                    <input type="text" class="form-control" name="additional_field_value[]" placeholder="Field Value">
+                                </div>
+                                <div class="col-auto">
+                                    <button type="button" class="btn btn-danger remove-field">Remove</button>
+                                </div>
+                            </div>
+                        </div>
+                        <button type="button" id="add-field-btn" class="btn btn-secondary">Add Another Field</button>
+                    </div>
+                </div>
+
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <button type="submit" name="add_another" value="1" class="btn btn-info me-md-2">
+                        Save & Add Another Dose Group
+                    </button>
+                    <button type="submit" class="btn btn-success">Continue to Outcomes</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function toggleCustomField(selectId, customFieldId) {
+            const select = document.getElementById(selectId);
+            const customField = document.getElementById(customFieldId);
+
+            if (select.value === 'other') {
+                customField.style.display = 'block';
+                customField.querySelector('input').required = true;
+            } else {
+                customField.style.display = 'none';
+                customField.querySelector('input').required = false;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            toggleCustomField('dose_unit', 'custom_dose_unit_field');
+
+            // Add field button
+            document.getElementById('add-field-btn').addEventListener('click', function() {
+                const container = document.getElementById('additional-fields-container');
+                const fieldTemplate = document.querySelector('.additional-field').cloneNode(true);
+
+                // Clear input values
+                fieldTemplate.querySelectorAll('input').forEach(input => {
+                    input.value = '';
+                });
+
+                // Add remove button functionality
+                fieldTemplate.querySelector('.remove-field').addEventListener('click', function() {
+                    this.closest('.additional-field').remove();
+                });
+
+                container.appendChild(fieldTemplate);
+            });
+
+            // Initial remove buttons
+            document.querySelectorAll('.remove-field').forEach(button => {
+                button.addEventListener('click', function() {
+                    this.closest('.additional-field').remove();
+                });
+            });
+        });
+    </script>
+{% endblock %}

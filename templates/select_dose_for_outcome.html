@@ -1,0 +1,64 @@
+{% extends 'base.html' %}
+
+{% block title %}ToxBase - Select Dose Group{% endblock %}
+
+{% block content %}
+    <h1 class="mb-4">Select Dose Group for Outcome</h1>
+
+    <div class="progress mb-4">
+        <div class="progress-bar bg-success" role="progressbar" style="width: 90%;"
+             aria-valuenow="90" aria-valuemin="0" aria-valuemax="100">Step 3.5 of 4</div>
+    </div>
+
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle me-2"></i>
+        Selecting dose group for animal model: <strong>{{ animal_model.species }} ({{ animal_model.sex }})</strong>
+        in study <strong>{{ animal_model.study.name }}</strong>
+    </div>
+
+    <div class="card">
+        <div class="card-header bg-primary text-white">
+            <h5 class="card-title mb-0">Available Dose Groups</h5>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead>
+                        <tr>
+                            <th>Dose Value</th>
+                            <th>Unit</th>
+                            <th>Group Size</th>
+                            <th>Exposure Duration</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for dose_group in dose_groups %}
+                        <tr>
+                            <td>{{ dose_group.dose_value }}</td>
+                            <td>{{ dose_group.custom_dose_unit if dose_group.dose_unit == 'other' else dose_group.dose_unit }}</td>
+                            <td>{{ dose_group.group_size }}</td>
+                            <td>{{ dose_group.exposure_duration or 'Not specified' }}</td>
+                            <td>
+                                <a href="{{ url_for('new_outcome', dose_id=dose_group.id) }}" class="btn btn-primary">
+                                    <i class="fas fa-plus-circle me-2"></i>Add Outcome
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-footer">
+            <div class="d-flex justify-content-between">
+                <a href="{{ url_for('new_dose_group', animal_id=animal_model.id) }}" class="btn btn-secondary">
+                    <i class="fas fa-plus me-2"></i>Add Another Dose Group
+                </a>
+                <a href="{{ url_for('view_study', study_id=animal_model.study_id) }}" class="btn btn-success">
+                    <i class="fas fa-check-circle me-2"></i>Skip and Complete Study
+                </a>
+            </div>
+        </div>
+    </div>
+{% endblock %}
