@@ -1,5 +1,9 @@
 # Project Explanation: ToxDB
 
+## Overview
+
+ToxDB is an open-source, community-driven toxicology database designed to collect, organize, and make accessible scientific data from toxicological studies. It provides a standardized format for recording toxicology experiments, with a hierarchical data structure that accommodates different animal models, dose groups, and outcome measurements.
+
 ## Problem
 
 Toxicology research generates vast amounts of data that are often stored in disparate formats, making it difficult to compare results across studies or perform meta-analyses. Researchers, citizens, and regulatory agencies need a standardized way to record, access, and analyze toxicology data to make informed decisions about chemical safety.
@@ -91,13 +95,6 @@ ToxDB has the potential to significantly impact toxicology research and regulato
 
 By creating an open repository of toxicology data, ToxDB intends to support more efficient research, better-informed regulatory decisions, and ultimately, improved protection of human health and the environment.
 
-
-
-# ToxDB - Open Source Toxicology Database
-
-## Overview
-
-ToxDB is an open-source, community-driven toxicology database designed to collect, organize, and make accessible scientific data from toxicological studies. It provides a standardized format for recording toxicology experiments, with a hierarchical data structure that accommodates different animal models, dose groups, and outcome measurements.
 
 ## Installation
 
